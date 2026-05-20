@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.view.View;
+import android.view.ViewParent;
 
 import com.facebook.react.views.view.ReactViewGroup;
 
@@ -52,10 +53,11 @@ public class RNCMaskedView extends ReactViewGroup {
 
     if (!mBitmapMaskInvalidated) {
       View maskView = getChildAt(0);
-      if (maskView != null) {
-        if (maskView.equals(child)) {
-          mBitmapMaskInvalidated = true;
-        }
+      // OEM-specific invalidation propagation may report either the direct mask child
+      // or a deeper descendant here, so invalidate the cached bitmap for the whole
+      // mask subtree rather than only for the direct child.
+      if (maskView != null && isDescendantOfMaskView(maskView, child)) {
+        mBitmapMaskInvalidated = true;
       }
     }
 
@@ -108,5 +110,17 @@ public class RNCMaskedView extends ReactViewGroup {
 
   public void setRenderingMode(String renderingMode) {
     mRenderingMode = renderingMode.equals("software") ? View.LAYER_TYPE_SOFTWARE : View.LAYER_TYPE_HARDWARE;
+  }
+
+  private boolean isDescendantOfMaskView(View maskView, View child) {
+    View current = child;
+    while (current != null) {
+      if (current == maskView) {
+        return true;
+      }
+      ViewParent parent = current.getParent();
+      current = parent instanceof View ? (View) parent : null;
+    }
+    return false;
   }
 }
