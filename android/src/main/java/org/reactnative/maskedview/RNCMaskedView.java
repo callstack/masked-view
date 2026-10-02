@@ -47,6 +47,14 @@ public class RNCMaskedView extends ReactViewGroup {
   }
 
   @Override
+  public void startViewTransition(View view) {
+    // Disappearing children draw even when invisible; the mask is bitmap input only.
+    if (view != getChildAt(0)) {
+      super.startViewTransition(view);
+    }
+  }
+
+  @Override
   public void onDescendantInvalidated(View child, View target) {
     super.onDescendantInvalidated(child, target);
 
