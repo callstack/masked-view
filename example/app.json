@@ -13,6 +13,10 @@
     {
       "appKey": "MaskedViewTextExample",
       "displayName": "MaskedViewTextExample"
+    },
+    {
+      "appKey": "MaskedViewPointerEventsExample",
+      "displayName": "Pointer events comparison"
     }
   ],
   "resources": {
