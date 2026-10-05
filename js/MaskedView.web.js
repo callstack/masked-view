@@ -1,23 +1,19 @@
-import React, { ReactNode, useEffect, useRef, useState } from "react";
-import { View } from "react-native";
-import { domToPng } from "modern-screenshot";
-const MaskedView = ({
-  children,
-  maskElement,
-  style,
-  ...rest
-}) => {
+/* global ResizeObserver */
+import React, { useEffect, useRef, useState } from 'react';
+import { View } from 'react-native';
+import { domToPng } from 'modern-screenshot';
+const MaskedView = ({ children, maskElement, style, ...rest }) => {
   const maskRef = useRef(null);
-  const [mask, setMask] = useState("");
+  const [mask, setMask] = useState('');
   const snapShot = () => {
     if (!maskRef.current) return;
-    domToPng(maskRef.current).then((dataUrl) => {
+    domToPng(maskRef.current).then(dataUrl => {
       setMask(dataUrl);
     });
   };
   useEffect(() => {
     const observer = new ResizeObserver(snapShot);
-    observer.observe(maskRef.current!);
+    observer.observe(maskRef.current);
     return () => {
       observer.disconnect();
     };
@@ -27,8 +23,8 @@ const MaskedView = ({
     <>
       <View
         style={{
-          position: "absolute",
-          transform: [{ translateX: "-100%" }, { translateY: "-100%" }],
+          position: 'absolute',
+          transform: [{ translateX: '-100%' }, { translateY: '-100%' }],
         }}
       >
         <div ref={maskRef}>{maskElement}</div>
